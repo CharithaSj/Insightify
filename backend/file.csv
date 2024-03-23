@@ -1,0 +1,19 @@
+import csv
+
+# Data to be written to the CSV file
+data = [
+    [100, 20],
+    [134, 15],
+    [140, 10],
+    [150, 5]
+]
+
+# File path to save the CSV file
+file_path = 'file.csv'
+
+# Writing data to CSV file
+with open(file_path, 'w', newline='') as csvfile:
+    writer = csv.writer(csvfile)
+    writer.writerows(data)
+
+print(f'CSV file created successfully at {file_path}')
