@@ -1,12 +1,12 @@
 import os
 from embedchain import App
-import keys
+
 from flask import Flask, request, jsonify, send_file
 import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib
 import io
-os.environ["OPENAI_API_KEY"] = keys.openai
+os.environ["OPENAI_API_KEY"] = os.environ["SECRET"]
 openai = App()
 
 app = Flask(__name__)
