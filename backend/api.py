@@ -1,38 +1,46 @@
 import os
 from embedchain import App
-
+# import keys
 from flask import Flask, request, jsonify, send_file
+from flask_cors import CORS
 import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib
 import io
+
 os.environ["OPENAI_API_KEY"] = os.environ["SECRET"]
 openai = App()
 
 app = Flask(__name__)
+CORS(app)
+app.config['CORS_HEADERS'] = 'Content-Type'
 
 # model data
 openai.add('https://databox.com/business-report')
-openai.add('https://communityimpact.com/dallas-fort-worth/frisco/real-estate/2024/01/05/2024-texas-real-estate-forecast-predicts-more-inventory-increased-rents/#:~:text=2024%20Texas%20Real%20Estate%20Forecast%20predicts%20more%20inventory%2C%20increased%20rents,-By%20Colby%20Farr&text=More%20single%2Dfamily%20homes%20and,A%26M%20Real%20Estate%20Research%20Center.&text=The%20center%20published%20its%202024%20Texas%20Real%20Estate%20Forecast%20on%20Jan.')
-openai.add('https://www.nar.realtor/magazine/real-estate-news/home-and-design/real-estate-and-design-trends-to-watch-in-2024')
+openai.add(
+    'https://communityimpact.com/dallas-fort-worth/frisco/real-estate/2024/01/05/2024-texas-real-estate-forecast-predicts-more-inventory-increased-rents/#:~:text=2024%20Texas%20Real%20Estate%20Forecast%20predicts%20more%20inventory%2C%20increased%20rents,-By%20Colby%20Farr&text=More%20single%2Dfamily%20homes%20and,A%26M%20Real%20Estate%20Research%20Center.&text=The%20center%20published%20its%202024%20Texas%20Real%20Estate%20Forecast%20on%20Jan.')
+openai.add(
+    'https://www.nar.realtor/magazine/real-estate-news/home-and-design/real-estate-and-design-trends-to-watch-in-2024')
+
 
 @app.route('/getText', methods=['GET'])
 def get_text():
-
     user_text = request.args.get('text', None)
 
+    # user_text.headers.add('Access-Control-Allow-Origin', '*')
     if user_text is not None:
         res = openai.query(user_text)
         response_text = f"{res}"
         return jsonify({'response': response_text})
     # else:
-        # response_text = "Please "
+    # response_text = "Please "
+
+
 @app.route('/upload_csv', methods=['POST'])
 def upload_csv():
     # Get files
     file = request.files['file']
     matplotlib.use('agg')
-
 
     file_path = os.path.join(os.getcwd(), file.filename)
     file.save(file_path)
@@ -54,6 +62,7 @@ def upload_csv():
     img_buffer.seek(0)
 
     return send_file(img_buffer, mimetype='image/png')
+
 
 if __name__ == '__main__':
     app.run(debug=True)
